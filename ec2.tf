@@ -35,17 +35,17 @@ resource "aws_instance" "EC2_MotoPhoto" {
   user_data = data.template_file.ec2userdatatemplate.rendered
 }
 
-data "template_file" "ec2userdatatemplate" {
+/* data "template_file" "ec2userdatatemplate" {
   template = file("userdata.tpl")
 
   vars = {
     rds_endpoint       = replace("${data.aws_db_instance.mysql_data.endpoint}", ":3306", "")
-    rds_username       = "${var.rds_username}"
-    rds_password       = "%{var.rds_password}"
+    rds_username       = "${var.db_username}"
+    rds_password       = "%{var.db_password}"
     rds_db_name        = "%{data.aws_db_instance.mysql_data.db_name}"
   }
 }
-/* 
+
 output "ec2rendered" {
   value = "${data.template_file.ec2userdatatemplate.rendered}"
 }
