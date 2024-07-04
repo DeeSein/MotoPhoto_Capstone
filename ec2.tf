@@ -25,8 +25,8 @@ resource "aws_instance" "EC2_MotoPhoto" {
   availability_zone           = var.availability_zones[0]
   associate_public_ip_address = true
   key_name                    = var.key_name
-  vpc_security_group_ids      = [aws_security_group.sg_vpc.id]
-  subnet_id                   = aws_subnet.public-1.id
+  vpc_security_group_ids      = [aws_security_group.wordpress_sg.id]
+  subnet_id                   = aws_subnet.public[0].id
   count = 1
   
   tags = {
