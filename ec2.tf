@@ -32,11 +32,12 @@ resource "aws_instance" "EC2_MotoPhoto" {
   tags = {
     Name = "EC2_MotoPhoto"
   }
-  user_data = data.template_file.ec2userdatatemplate.rendered
+  user_data = file("userdata.sh")
+  #user_data = data.template_file.ec2userdatatemplate.rendered
 }
 
 /* data "template_file" "ec2userdatatemplate" {
-  template = file("userdata.tpl")
+  template = file("userdata.sh")
 
   vars = {
     rds_endpoint       = replace("${data.aws_db_instance.mysql_data.endpoint}", ":3306", "")
