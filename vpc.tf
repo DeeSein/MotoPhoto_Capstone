@@ -36,7 +36,7 @@ resource "aws_subnet" "private" {
   count             = length(var.private_subnet_cidr_blocks)
   vpc_id            = aws_vpc.vpc.id
   cidr_block        = var.private_subnet_cidr_blocks[count.index]
-  availability_zone = var.availability_zones[count.index % length(var.availability_zones)]
+  availability_zone = var.availability_zones[count.index]
 
   tags = {
     Name = "Private_Subnet ${var.tagNameDate}_${count.index + 1}"
@@ -58,11 +58,10 @@ resource "aws_route_table" "public" {
 }
 
 resource "aws_route_table" "private" {
-  count  = length(var.availability_zones)
   vpc_id = aws_vpc.vpc.id
 
   tags = {
-    Name = "Private_Route_Table ${var.tagNameDate}_${count.index + 1}"
+    Name = "Private_Route_Table ${var.tagNameDate}"
   }
 }
 
@@ -77,5 +76,5 @@ resource "aws_route_table_association" "public_assoc" {
 resource "aws_route_table_association" "private_assoc" {
   count          = length(var.private_subnet_cidr_blocks)
   subnet_id      = aws_subnet.private[count.index].id
-  route_table_id = aws_route_table.private[count.index].id
+  route_table_id = aws_route_table.private.id
 }
