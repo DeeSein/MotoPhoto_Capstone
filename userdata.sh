@@ -31,10 +31,10 @@ DBRootPassword='rootpassword'
 mysqladmin -u root password $DBRootPassword
 
 # Retrieve RDS endpoint from Terraform output
-DBName="MotoPhotoDB"
-DBUser="admin"
-DBPassword="password123"
-RDS_ENDPOINT="localhost"
+DBName="MotoPhotoDB" #just for test
+DBUser="admin" #just for test
+DBPassword="password123" #just for test
+RDS_ENDPOINT="localhost" #just for test
 
 # Create a temporary file to store the database value
 sudo touch db.txt
