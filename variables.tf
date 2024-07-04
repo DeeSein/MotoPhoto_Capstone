@@ -1,6 +1,6 @@
 # vpc name variable
 variable "tagNameDate" {
-  default = "04/07/2024"
+  default = "04/07/2024" # Replace with the actual date
 }
 
 # VPC Variables
@@ -21,4 +21,28 @@ variable "public_subnet_cidr_blocks" {
 variable "private_subnet_cidr_blocks" {
   description = "CIDR blocks for private subnets"
   default     = ["10.0.0.128/26", "10.0.0.192/26"] # Adjust as needed
+}
+
+# EC2 Variables
+variable "ec2_instance_type" {
+  default = "t2.micro" # Replace with your desired instance type
+}
+
+variable "key_name" {
+  default = "vockey" # Replace with your key pair name
+}
+
+# Variables for RDS DB Instance
+variable "db_username" {
+  description = "Username for the DB instance"
+  default = "root" # Replace with your MySQL username
+}
+variable "db_password" {
+  description = "Password for the DB instance"
+  default = "password123" # Replace with your MySQL password
+  sensitive = true
+}
+variable "rds_db_name" {
+  description = "Name of the RDS DB instance"
+  default = "myDatabase" # Replace with your desired DB name
 }
