@@ -6,7 +6,7 @@ locals {
 
 ### Select the newest AMI
 
-data "aws_ami" "latest_linux_ami" {
+data "aws_ami" "latest_linux2_ami" {
   most_recent = true
   owners      = ["amazon"]
 
@@ -20,7 +20,7 @@ data "aws_ami" "latest_linux_ami" {
 ### Create an EC2 instance
 
 resource "aws_instance" "EC2_MotoPhoto" {
-  ami                         = data.aws_ami.latest_linux_ami.id
+  ami                         = data.aws_ami.latest_linux2_ami.id
   instance_type               = var.ec2_instance_type
   availability_zone           = var.availability_zones[0]
   associate_public_ip_address = true
@@ -32,7 +32,7 @@ resource "aws_instance" "EC2_MotoPhoto" {
   tags = {
     Name = "EC2_MotoPhoto"
   }
-  user_data = file("userdata.sh")
+  user_data = file("userdata.tpl")
   #user_data = data.template_file.ec2userdatatemplate.rendered
 }
 
