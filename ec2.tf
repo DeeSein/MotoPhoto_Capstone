@@ -32,7 +32,7 @@ resource "aws_instance" "EC2_MotoPhoto" {
   tags = {
     Name = "EC2_MotoPhoto"
   }
-  user_data = file("userdata.tpl")
+  user_data = file("userdata.sh")
   #user_data = data.template_file.ec2userdatatemplate.rendered
 }
 
