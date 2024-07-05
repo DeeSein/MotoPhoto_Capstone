@@ -1,4 +1,5 @@
 #! /bin/bash
+
 # # Install updates
 sudo yum update -y
 
@@ -9,67 +10,59 @@ sudo yum install -y stress-ng
 
 #Install httpd
 sudo yum install -y httpd
-sudo systemctl start httpd
-sudo systemctl enable httpd
-
-#Install mysql
-sudo yum install -y mysql
 
 #Install PHP
-sudo yum install -y php 
-sudo amazon-linux-extras install 
+sudo amazon-linux-extras install -y php8.0
 
-
-# Update all installed 
-sudo yum update -y
-
-#Restart Apache
-sudo systemctl restart httpd
-
-#Install Wordpress
-DBRootPassword='rootpassword'
-mysqladmin -u root password $DBRootPassword
+#Install mysql
+sudo yum install -y mariadb-server unzip
 
 # Retrieve RDS endpoint from Terraform output
 DBName="MotoPhotoDB" #just for test
 DBUser="admin" #just for test
-DBPassword="password123" #just for test
+DBPassword="Password_123" #just for test
 RDS_ENDPOINT="localhost" #just for test
+DBHost="localhost"
 
-# Create a temporary file to store the database value
-sudo touch db.txt
-sudo chmod 777 db.txt
-sudo echo "DATABASE $DBName;" >> db.txt
-sudo echo "USER $DBUser;" >> db.txt
-sudo echo "PASSWORD $DBPassword;" >> db.txt
-sudo echo "HOST $RDS_ENDPOINT;" >> db.txt
+# Start Apache server and enable it on system startup
+sudo systemctl start httpd
+sudo systemctl enable httpd
+
+# Start MariaDB service and enable it on system startup
+sudo systemctl start mariadb
+sudo systemctl enable mariadb
+
+# Wait for MariaDB to fully start
+sleep 10
 
 
-sudo yum install -y wget
-sudo wget http://wordpress.org/latest.tar.gz -P /var/www/html/
+# Set MariaDB root password
+sudo mysqladmin -u root password "$DBRootPassword"
 
+# Download and install WordPress
+sudo wget http://wordpress.org/latest.tar.gz -P /var/www/html
 cd /var/www/html
 sudo tar -zxvf latest.tar.gz
 sudo cp -rvf wordpress/* .
-
 sudo rm -R wordpress
 sudo rm latest.tar.gz
 
-echo "Terraform output:"
-
-# Copy wp-config.php file to wordpress directory
-sudo cp ./wp-config-sample.php ./wp-config.php
+# Making changes to the wp-config.php file, setting the DB name
+sudo cp ./wp-config-sample.php ./wp-config.php 
 sudo sed -i "s/'database_name_here'/'$DBName'/g" wp-config.php
 sudo sed -i "s/'username_here'/'$DBUser'/g" wp-config.php
 sudo sed -i "s/'password_here'/'$DBPassword'/g" wp-config.php
-sudo sed -i "s/'localhost'/'$RDS_ENDPOINT'/g" wp-config.php
+sudo sed -i "s/'localhost'/'$DBHost'/g" wp-config.php
 
-sudo mysql -h "$RDS_ENDPOINT" -u "$DBUser" -p"$DBPassword" "$DBName" -e "SHOW DATABASES;"
+# Grant permissions
+sudo usermod -a -G apache ec2-user
+sudo chown -R ec2-user:apache /var/www
+sudo chmod 2775 /var/www
+sudo find /var/www -type d -exec chmod 2775 {} \;
+sudo find /var/www -type f -exec chmod 0664 {} \;
 
-#Install PHP Extensions
-sudo amazon-linux-extras enable php7.4
-sudo yum clean metadata
-sudo yum install -y php-cli php-pdo php-fpm php-json php-mysqlnd
-
-# Restart Apache
-sudo systemctl restart httpd
+# Create WordPress database
+echo "CREATE DATABASE IF NOT EXISTS $DBName;" | mysql -u root --password=$DBRootPassword
+echo "CREATE USER IF NOT EXISTS '$DBUser'@'localhost' IDENTIFIED BY '$DBPassword';" | mysql -u root --password=$DBRootPassword
+echo "GRANT ALL ON $DBName.* TO '$DBUser'@'localhost';" | mysql -u root --password=$DBRootPassword
+echo "FLUSH PRIVILEGES;" | mysql -u root --password=$DBRootPassword
