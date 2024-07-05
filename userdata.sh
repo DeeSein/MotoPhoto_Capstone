@@ -15,13 +15,15 @@ sudo yum install -y httpd
 sudo amazon-linux-extras install -y php8.0
 
 #Install mysql
-sudo yum install -y mariadb-server unzip
+sudo amazon-linux-extras enable mariadb10.5
+sudo yum clean metadata
+sudo yum install -y mariadb unzip
 
 # Retrieve RDS endpoint from Terraform output
 DBName="MotoPhotoDB" #just for test
 DBUser="admin" #just for test
 DBPassword="Password_123" #just for test
-RDS_ENDPOINT="localhost" #just for test
+DBRootPassword="rootpassword1234" #just for test
 DBHost="localhost"
 
 # Start Apache server and enable it on system startup
@@ -34,7 +36,6 @@ sudo systemctl enable mariadb
 
 # Wait for MariaDB to fully start
 sleep 10
-
 
 # Set MariaDB root password
 sudo mysqladmin -u root password "$DBRootPassword"
