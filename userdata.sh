@@ -20,11 +20,11 @@ sudo yum clean metadata
 sudo yum install -y mariadb unzip
 
 # Retrieve RDS endpoint from Terraform output
-DBName="MotoPhotoDB" #just for test
-DBUser="admin" #just for test
-DBPassword="Password_123" #just for test
+DBName=${rds_db_name}
+DBUser=${rds_db_username}
+DBPassword=${rds_db_password}
+RDS_ENDPOINT=${rds_db_endpoint}
 DBRootPassword="rootpassword1234" #just for test
-DBHost="localhost"
 
 # Start Apache server and enable it on system startup
 sudo systemctl start httpd
