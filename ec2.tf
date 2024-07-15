@@ -30,8 +30,16 @@ resource "aws_instance" "EC2_MotoPhoto" {
   count = 1
   
   tags = {
-    Name = "EC2_MotoPhoto"
+    Name = "EC2_MotoPhoto_${var.tagNameDate}"
   }
-  user_data = file("userdata.sh")
+  #set up with userdata template to collect variables
+  user_data = templatefile("${path.module}/userdata.sh", 
+    {
+      #make sure your variables are the same as your userdata.tpl
+      rds_db_name     = var.rds_db_name
+      rds_db_username = var.rds_db_username
+      rds_db_password = var.rds_db_password
+      rds_db_endpoint = aws_db_instance.rds.endpoint 
+    })  
 }
 

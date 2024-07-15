@@ -18,8 +18,8 @@ resource "aws_db_instance" "rds" {
   engine_version               = "8.0.35"
   instance_class               = "db.t3.micro"
   db_name                      = var.rds_db_name
-  username                     = var.db_username
-  password                     = var.db_password
+  username                     = var.rds_db_username
+  password                     = var.rds_db_password
   vpc_security_group_ids       = [aws_security_group.rds_sg.id]
   db_subnet_group_name         = aws_db_subnet_group.privat_rds.name
   multi_az                     = false
@@ -31,19 +31,19 @@ resource "aws_db_instance" "rds" {
   }
 }
 
-data "aws_db_instance" "name" {
+/* data "aws_db_instance" "name" {
     db_instance_identifier    = aws_db_instance.rds.db_name
 }
-
+ */
 # get DB Name, username, password, endpoint from RDS above
 output "rds_db_name" {
-    value = aws_db_instance.rds.db_name
+    value = var.rds_db_name
 }
 output "rds_db_username" {
-    value = var.db_username
+    value = var.rds_db_username
 }
 output "rds_db_password" {
-    value = var.db_password
+    value = var.rds_db_password
     sensitive = true
 }
 output "rds_db_endpoint" {

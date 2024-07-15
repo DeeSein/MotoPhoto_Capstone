@@ -1,6 +1,6 @@
 # vpc name variable
 variable "tagNameDate" {
-  default = "04/07/2024" # Replace with the actual date
+  default = "15/07/2024" # Replace with the actual date
 }
 
 # VPC Variables
@@ -33,16 +33,17 @@ variable "key_name" {
 }
 
 # Variables for RDS DB Instance
-variable "db_username" {
+variable "rds_db_username" {
   description = "Username for the DB instance"
-  default = "root" # Replace with your MySQL username
+  default = "DB_User_1" # Replace with your MySQL username
 }
-variable "db_password" {
+variable "rds_db_password" {
   description = "Password for the DB instance"
   default = "password123" # Replace with your MySQL password
   sensitive = true
 }
 variable "rds_db_name" {
   description = "Name of the RDS DB instance"
-  default = "myDatabase" # Replace with your desired DB name
+  default = "MPB_Database" # Replace with your desired DB name
 }
+
