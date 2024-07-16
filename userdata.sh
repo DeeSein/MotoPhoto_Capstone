@@ -56,6 +56,7 @@ sudo sed -i "s/'database_name_here'/'$DBName'/g" wp-config.php
 sudo sed -i "s/'username_here'/'$DBUser'/g" wp-config.php
 sudo sed -i "s/'password_here'/'$DBPassword'/g" wp-config.php
 sudo sed -i "s/'localhost'/'$RDS_ENDPOINT'/g" wp-config.php
+echo „define( 'FS_METHOD', 'direct' );“ >> /var/www/html/wp-config.php
 
 # Grant permissions
 sudo usermod -a -G apache ec2-user
