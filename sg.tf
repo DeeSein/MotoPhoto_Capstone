@@ -34,3 +34,32 @@ resource "aws_security_group" "wordpress_sg" {
     Name = "wordpress_sg ${var.tagNameDate}"
   }
 }
+
+# Create Security Group for RDS
+
+resource "aws_security_group" "rds_sg" {
+  name        = "rds_sg"
+  description = "Security group for RDS instance"
+
+  vpc_id = aws_vpc.vpc.id
+
+  ingress {
+    description = "MySQL"
+    from_port   = 3306
+    to_port     = 3306
+    protocol    = "tcp"
+    cidr_blocks = var.cidr_blocks
+  }
+
+  egress {
+    description = "All traffic"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = var.cidr_blocks
+  }
+
+  tags = {
+    Name = "rds_sg ${var.tagNameDate}"
+  }
+}

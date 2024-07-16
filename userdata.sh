@@ -19,12 +19,14 @@ sudo amazon-linux-extras enable mariadb10.5
 sudo yum clean metadata
 sudo yum install -y mariadb unzip
 
-# Retrieve RDS endpoint from Terraform output
-DBName="MotoPhotoDB" #just for test
-DBUser="admin" #just for test
-DBPassword="Password_123" #just for test
+# Retrieve RDS variables from Terraform output
+sudo touch DB_VAR.txt
+sudo chmod 777 DB_VAR.txt
+DBName=${rds_db_name} >> DB_VAR.txt
+DBUser=${rds_db_username} >> DB_VAR.txt
+DBPassword=${rds_db_password} >> DB_VAR.txt
+RDS_ENDPOINT=${rds_db_endpoint} >> DB_VAR.txt
 DBRootPassword="rootpassword1234" #just for test
-DBHost="localhost"
 
 # Start Apache server and enable it on system startup
 sudo systemctl start httpd
@@ -53,7 +55,8 @@ sudo cp ./wp-config-sample.php ./wp-config.php
 sudo sed -i "s/'database_name_here'/'$DBName'/g" wp-config.php
 sudo sed -i "s/'username_here'/'$DBUser'/g" wp-config.php
 sudo sed -i "s/'password_here'/'$DBPassword'/g" wp-config.php
-sudo sed -i "s/'localhost'/'$DBHost'/g" wp-config.php
+sudo sed -i "s/'localhost'/'$RDS_ENDPOINT'/g" wp-config.php
+echo „define( 'FS_METHOD', 'direct' );“ >> /var/www/html/wp-config.php
 
 # Grant permissions
 sudo usermod -a -G apache ec2-user

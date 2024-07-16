@@ -36,3 +36,6 @@ terraform.rc
 
 plan.out
 plan.json
+
+.DS_Store
+.anima
