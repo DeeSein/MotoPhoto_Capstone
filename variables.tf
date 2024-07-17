@@ -1,6 +1,6 @@
 # vpc name variable
 variable "tagNameDate" {
-  default = "15/07/2024" # Replace with the actual date
+  default = "17/07/2024" # Replace with the actual date
 }
 
 # VPC Variables
