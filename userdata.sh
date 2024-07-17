@@ -14,11 +14,6 @@ sudo yum install -y httpd
 #Install PHP
 sudo amazon-linux-extras install -y php8.0
 
-#Install mysql
-sudo amazon-linux-extras enable mariadb10.5
-sudo yum clean metadata
-sudo yum install -y mariadb unzip
-
 # Retrieve RDS variables from Terraform output
 sudo touch DB_VAR.txt
 sudo chmod 777 DB_VAR.txt
@@ -26,21 +21,10 @@ DBName=${rds_db_name} >> DB_VAR.txt
 DBUser=${rds_db_username} >> DB_VAR.txt
 DBPassword=${rds_db_password} >> DB_VAR.txt
 RDS_ENDPOINT=${rds_db_endpoint} >> DB_VAR.txt
-DBRootPassword="rootpassword1234" #just for test
 
 # Start Apache server and enable it on system startup
 sudo systemctl start httpd
 sudo systemctl enable httpd
-
-# Start MariaDB service and enable it on system startup
-sudo systemctl start mariadb
-sudo systemctl enable mariadb
-
-# Wait for MariaDB to fully start
-sleep 10
-
-# Set MariaDB root password
-sudo mysqladmin -u root password "$DBRootPassword"
 
 # Download and install WordPress
 sudo wget http://wordpress.org/latest.tar.gz -P /var/www/html
@@ -56,7 +40,6 @@ sudo sed -i "s/'database_name_here'/'$DBName'/g" wp-config.php
 sudo sed -i "s/'username_here'/'$DBUser'/g" wp-config.php
 sudo sed -i "s/'password_here'/'$DBPassword'/g" wp-config.php
 sudo sed -i "s/'localhost'/'$RDS_ENDPOINT'/g" wp-config.php
-echo „define( 'FS_METHOD', 'direct' );“ >> /var/www/html/wp-config.php
 
 # Grant permissions
 sudo usermod -a -G apache ec2-user
@@ -70,3 +53,6 @@ echo "CREATE DATABASE IF NOT EXISTS $DBName;" | mysql -u root --password=$DBRoot
 echo "CREATE USER IF NOT EXISTS '$DBUser'@'localhost' IDENTIFIED BY '$DBPassword';" | mysql -u root --password=$DBRootPassword
 echo "GRANT ALL ON $DBName.* TO '$DBUser'@'localhost';" | mysql -u root --password=$DBRootPassword
 echo "FLUSH PRIVILEGES;" | mysql -u root --password=$DBRootPassword
+
+# Change the Wordpress configuration to direct connection instead of FTP
+sudo echo "define( 'FS_METHOD', 'direct' );" >> /var/www/html/wp-config.php
