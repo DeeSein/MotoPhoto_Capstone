@@ -43,3 +43,6 @@ resource "aws_instance" "EC2_MotoPhoto" {
     })  
 }
 
+output "PublicIP" {
+  value = aws_instance.EC2_MotoPhoto[0].public_ip
+}
