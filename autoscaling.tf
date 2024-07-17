@@ -10,19 +10,18 @@ data "aws_instance" "ec2_moto_instance" {
 
 # create launch template
 resource "aws_launch_template" "ec2_launch_template" {
-  name          = "MPB_ec2-launch-template"
-  instance_type = var.ec2_instance_type
+  name_prefix          = "MPB_ec2-launch-template"
   image_id      = data.aws_ami.latest_linux2_ami.id
+  instance_type = var.ec2_instance_type
   key_name      = var.key_name
   vpc_security_group_ids = [aws_security_group.wordpress_sg.id]
-  user_data = templatefile("${path.module}/userdata.sh", 
-    {
+  user_data = base64encode(templatefile("${path.module}/userdata.sh", {
       #make sure your variables are the same as your userdata.tpl
       rds_db_name     = var.rds_db_name
       rds_db_username = var.rds_db_username
       rds_db_password = var.rds_db_password
       rds_db_endpoint = aws_db_instance.rds.endpoint 
-    }) 
+    })) 
 
   lifecycle {
     create_before_destroy = true
