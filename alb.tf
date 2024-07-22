@@ -40,7 +40,7 @@ resource "aws_lb_target_group" "ec2_tg" {
 
 # connect autoscaling to alb
 resource "aws_autoscaling_attachment" "bar" {
-  autoscaling_group_name = aws_autoscaling_group.ec2_asg.id
+  autoscaling_group_name = aws_autoscaling_group.example.id
   lb_target_group_arn    = aws_lb_target_group.ec2_tg.arn
 }
 
